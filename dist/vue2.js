@@ -39,7 +39,7 @@ export class ImportExcel {
    * 
    * @param {Object.<string,item>} mapData 数据映射表
    * @param {object} options 配置对象
-   * @param {boolean} [options.trim] 否清除值两端的空白字符, 默认为 true [可选]
+   * @param {boolean} [options.trim] 是否清除值两端的空白字符, 默认为 true [可选]
    * @param {function} [options.onRowLoad] 监听行的变化, 默认为 null, 接收一个上下文对象 [可选]
    */
   constructor(mapData, options = {}) {
@@ -302,6 +302,7 @@ async function _getData2(buf) {
   try {
     const sheel = await _classPrivateFieldGet(this, _workbook).xlsx.load(buf);
     const worksheet = sheel.getWorksheet(1);
+    _classPrivateFieldSet(this, _worksheet, []);
     worksheet.eachRow(row => {
       _classPrivateFieldGet(this, _worksheet).push(row.values);
     });
