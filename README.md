@@ -100,7 +100,7 @@ const importExcel = new ImportExcel({
 importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
-    // 错误对象, 拥有两个参数: 
+    // 错误对象, 拥有两个字段: 
     // - code -2 表示传递的不是文件对象, -1 表示文件对象不是 xlsx 类型, 0 表示解析过程中出现了错误
     // - error Error 对象
 })
@@ -117,7 +117,7 @@ importExcel.load(file).then(res => {
   - header {Object[]} 导出文件的表头, 传递数组对象
     - key  表头字段
     - header 表头字段映射的值
-    - width 单元格宽度
+    - width 单元格宽度 [可选]
   - content {Object[]} 需要导出的数据, 传递数组对象
 
 ```js
