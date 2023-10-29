@@ -95,6 +95,15 @@ const importExcel = new ImportExcel({
         // key为设置的字段名, value 为设置的值
     }
 })
+
+// 加载一个 Excel, load() 传递一个文件对象, 返回一个 Promise
+importExcel.load(file).then(res => {
+    // res 解析后的结果
+}).catch(err => {
+    // 错误对象, 拥有两个参数: 
+    // - code -2 表示传递的不是文件对象, -1 表示文件对象不是 xlsx 类型, 0 表示解析过程中出现了错误
+    // - error Error 对象
+})
 ```
 
 
