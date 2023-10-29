@@ -155,6 +155,7 @@ export class ImportExcel {
         try {
             const sheel = await this.#workbook.xlsx.load(buf)
             const worksheet = sheel.getWorksheet(1)
+            this.#worksheet = []
             worksheet.eachRow((row) => {
                 this.#worksheet.push(row.values)
             })
