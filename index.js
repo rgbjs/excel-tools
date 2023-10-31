@@ -1,6 +1,6 @@
 /**
  * 依赖版本 exceljs 4.3.0
- * 依赖版本 assist-tools 0.0.2
+ * 依赖版本 assist-tools 0.1.0
  */
 
 import ExcelJS from 'exceljs'
