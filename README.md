@@ -49,7 +49,7 @@ import { ImportExcel, exportExcel } from 'excel-tools/dist/vue2'
 - mapData {Object} 数据映射表
 - options {Object} 配置对象 [可选]
   - trim  {Boolean} 是否清除值两端的空白字符, 默认为 true [可选]
-  - onRowLoad  {Function} 监听行的变化(每完成一行将调用一次), 默认为 null, 接收一个上下文对象 [可选]
+  - onRowLoad  {Function} 监听行的变化(每完成一行将调用一次),  接收一个上下文对象 [可选]
 
 ```js
 import { ImportExcel } from 'excel-tools'
@@ -62,11 +62,12 @@ const importExcel = new ImportExcel({
     "年龄": { // 配置参数形式
         key: "age", // 映射字段
         trim: false, // 不清除两端空白, 若不设置则使用配置对象中的 trim [可选参数]
-        value: "不存在" // 如果读取的单元格不存在值, 将用此作为默认值 [可选]
+        value: "不存在" // 监听值, 内部实际会包装成函数(同下方 "性别" 设置默认值一致), 如果读取的单元格不存在值, 将用此作为默认值 [可选]
     },
     "性别": {
-         key: "sex", 
-        value(context) { // 函数形式设置默认值, 接收一个上下文对象
+         key: "sex",
+        // 此处事件支持异步等待 => async value() => {}
+        value(context) { // 函数形式监听值, 接收一个上下文对象
             // context 中的参数:
             // - row 当前数据所在行下标(下标从0开始)
             // - originRow 当前数据在 Excel 中的行(下标从0开始)
@@ -74,18 +75,26 @@ const importExcel = new ImportExcel({
             // - originIndex 当前数据在 Excel 中的列(下标从0开始)
             // - key 当前的字段名
             // - originKey 映射前的字段名
+            // - value 当前的值
             // - rowItem 当前行解析前的数据(数组)
             // - getRowData() 函数, 用于获取当前行解析后的数据
             // - setData(key, value) 函数, 用于设置当前行数据某个字段的值
             // key为设置的字段名, value 为设置的值
+            
+            // 函数设置默认值
+            const { key, value, setData } = context
+            if(value === undefined) {
+                setData(key, '这是替代值')
+            }
         }
     }
 },
 // 配置对象
 {
 	trim: false, // 是否清除值两端的空白字符, 默认为 true [可选]
-    // 监听行的变化(每完成一行将调用一次), 默认为 null, 接收一个上下文对象 [可选]
+    // 监听行的变化(每完成一行将调用一次), 接收一个上下文对象 [可选]
     onRowLoad(context) {
+        // 该事件支持异步等待 => async value() => {}
         // context 中的参数:
         // - row 当前数据所在行下标(下标从0开始)
         // - originRow 当前数据在 Excel 中的行(下标从0开始)
@@ -101,7 +110,9 @@ importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
     // 错误对象, 拥有两个字段: 
-    // - code -2 表示传递的不是文件对象, -1 表示文件对象不是 xlsx 类型, 0 表示解析过程中出现了错误
+    // - code -2 表示传递的不是文件对象,
+    // - code -1 表示文件对象不是 xlsx 类型,
+    // - code 0 表示解析过程中出现了错误
     // - error Error 对象
 })
 ```
