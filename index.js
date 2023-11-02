@@ -234,7 +234,7 @@ export class ImportExcel {
                         result.push(rowData)
 
                         // 监听行变化时
-                        this.#onRowLoad && this.#onRowLoad({
+                        this.#onRowLoad && await this.#onRowLoad({
                             row: i, // 当前数据所在行下标
                             originRow: i + len, // 当前数据在 Excel 中的行
                             get rowItem() {
