@@ -223,7 +223,7 @@ export class ImportExcel {
             result.push(rowData);
 
             // 监听行变化时
-            _classPrivateFieldGet(this, _onRowLoad) && _classPrivateFieldGet(this, _onRowLoad).call(this, {
+            _classPrivateFieldGet(this, _onRowLoad) && (await _classPrivateFieldGet(this, _onRowLoad).call(this, {
               row: i,
               // 当前数据所在行下标
               originRow: i + len,
@@ -237,7 +237,7 @@ export class ImportExcel {
               },
 
               setData: _classPrivateMethodGet(this, _setData, _setData2).bind(this, rowData)
-            });
+            }));
           }
           resolve(result);
         } catch (error) {
