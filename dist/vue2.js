@@ -129,9 +129,9 @@ export class ImportExcel {
       if (typeof value === 'function') {
         // 函数, 先行执行一遍赋值, 之后再转移控制权
         const f = value;
-        value = context => {
+        value = async context => {
           _classPrivateMethodGet(this, _value, _value2).call(this, undefined, context);
-          f(context);
+          await f(context);
         };
       } else {
         // 非函数, 包装成函数
