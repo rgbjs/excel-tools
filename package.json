@@ -1,6 +1,6 @@
 {
   "name": "excel-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "基于 exceljs 封装的一个简易的导入导出模块",
   "main": "index.js",
   "keywords": [
