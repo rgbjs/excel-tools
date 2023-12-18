@@ -1,36 +1,68 @@
 /**
  * 依赖版本 exceljs 4.3.0
- * 依赖版本 assist-tools 0.1.0
+ * 依赖版本 assist-tools 0.2.1
  */
 
 import ExcelJS from 'exceljs'
 import { isType, clone } from 'assist-tools'
 
 /**
- * @typedef {Object} item
- * @property {string} key 映射的字段名
- * @property {*} [value] 数据不存在时的默认值, 可设置为一个函数, 执行过程中会被调用, 接收一个上下文对象 [可选]
+ * @typedef {Object} Ctx - 上下文对象
+ * @property {number} row - 当前数据所在行的下标(下标从0开始)
+ * @property {number} originRow - 当前数据在 Excel 中的行(下标从0开始)
+ * @property {number} index - 当前数据的下标(下标从0开始)
+ * @property {number} originIndex - 当前数据在 Excel 中的列(下标从0开始)
+ * @property {string} key - 当前的字段名
+ * @property {string} originKey - 映射前的字段名(原始字段名)
+ * @property {*} value - 当前的值
+ * @property {array} rowItem - 当前行解析前的数据(数组)
+ * @property {function} getRowData - 函数, 用于获取当前行解析后的数据
+ * @property {function} setData - setData(key, value) 函数, 用于设置当前行数据某个字段的值
+ */
+
+/**
+ * @typedef {Object} FieldFunc - 字段处理函数
+ * @function
+ * @property {Ctx} context - 上下文对象
+ */
+
+/**
+ * @typedef {Object} Item
+ * @property {string} originKey 原始字段名
+ * @property {string} key 映射后的字段名
+ * @property {FieldFunc} [value] 可设置为一个函数, 执行过程中会被调用, 接收一个上下文对象 [可选]
  * @property {boolean} [trim] 是否清除值两端的空白字符, 为空默认使用配置参数中的设置 [可选]
  */
 
 export class ImportExcel {
-    #mapData = {}
-    #map = {}
-    #keys = []
-    #workbook = null
+    // 配置对象
+    #options = {
+        trim: true,
+        onRowLoad: null
+    }
+    #originMapData = null // 原始配置
+    #mapData = {} // 解析后的数据
+    #map = {} // 映射关系
+    #keys = [] // 解析后的 keys
+    #workbook = null // Excel 对象
     #worksheet = [] // 读取的 Excel 数据
     #onRowLoad = null // 监听行变化时的回调
 
     /**
      * 
-     * @param {Object.<string,item>} mapData 数据映射表
+     * @param {Item[]} mapData 数据映射列表
      * @param {object} options 配置对象
      * @param {boolean} [options.trim] 是否清除值两端的空白字符, 默认为 true [可选]
      * @param {function} [options.onRowLoad] 监听行的变化, 默认为 null, 接收一个上下文对象 [可选]
      */
     constructor(mapData, options = {}) {
-        if (isType(mapData) !== 'object') {
-            throw new TypeError('"mapData" must be a object')
+        this.#init(mapData, options)
+        this.#workbook = new ExcelJS.Workbook()
+    }
+
+    #init(mapData, options) {
+        if (!(isType(mapData) === 'object' || isType(mapData) === 'array')) {
+            throw new TypeError('"mapData" must be a object or an array')
         }
 
         if (isType(options) !== 'object') {
@@ -46,42 +78,58 @@ export class ImportExcel {
             throw new TypeError('"onRowLoad" must be a function')
         }
 
-        this.#onRowLoad = onRowLoad
+        this.#originMapData = mapData
+        this.#options.trim = trim
+        this.#options.onRowLoad = onRowLoad
 
-        for (const k in mapData) {
-            if (!mapData.hasOwnProperty(k)) continue
-            let val = mapData[k]
+        if (isType(mapData) === 'object') {
+            console.warn('"mapData" does not recommend using object parsing, please use array parsing instead')
+            this.#v1Parse()
+        } else {
+            this.#v2Parse()
+        }
+    }
 
+    /**
+     * 解析对象结构
+     */
+    #v1Parse() {
+        for (const k in this.#originMapData) {
+            if (!this.#originMapData.hasOwnProperty(k)) continue
+
+            let val = this.#originMapData[k]
             if (typeof val === 'string') {
+                // 参数归一化, 设置默认配置
                 val = {
                     key: val,
                     value: undefined,
-                    trim
+                    trim: this.#options.trim
                 }
             } else if (isType(val) !== 'object') {
+                // 非字符串, 非对象抛出错误
                 throw new TypeError('property in mapData must be object or string')
             }
 
             // 当前字段 trim 不存在则使用配置对象中的 trim
-            let { key, value, trim: _trim = trim } = val
+            let { key, value, trim = this.#options.trim } = val
             if (!(typeof key === 'string' && key !== '')) {
                 throw new TypeError('the "key" must be a string and cannot be empty')
             }
 
+            if (typeof trim !== 'boolean') {
+                throw new TypeError('"trim" must be a boolean')
+            }
+
             if (typeof value === 'function') {
-                // 函数, 先行执行一遍赋值, 之后再转移控制权
-                const f = value
+                // 配置为函数, 先行执行一遍赋值, 之后再转移控制权
+                const func = value
                 value = async (context) => {
                     this.#value(undefined, context)
-                    await f(context)
+                    await func(context)
                 }
             } else {
                 // 非函数, 包装成函数
                 value = this.#value.bind(this, value)
-            }
-
-            if (typeof _trim !== 'boolean') {
-                throw new TypeError('"trim" must be a boolean')
             }
 
             this.#keys.push(key)
@@ -89,11 +137,53 @@ export class ImportExcel {
             this.#mapData[key] = {
                 key: k,
                 value,
-                trim: _trim
+                trim
             }
         }
+    }
 
-        this.#workbook = new ExcelJS.Workbook()
+    /**
+     * 解析数组结构
+     */
+    #v2Parse() {
+        for (let i = 0; i < this.#originMapData.length; i++) {
+            const item = this.#originMapData[i]
+            if (isType(item) !== 'object') {
+                // 非对象抛出错误
+                throw new TypeError('the projects of "mapData" must all be objects')
+            }
+
+            let { originKey, key, value, trim = this.#options.trim } = item
+            if (!(typeof originKey === 'string' && originKey !== '')) {
+                throw new TypeError('the "originKey" must be a string and cannot be empty')
+            }
+            if (!(typeof key === 'string' && key !== '')) {
+                throw new TypeError('the "key" must be a string and cannot be empty')
+            }
+            if (typeof trim !== 'boolean') {
+                throw new TypeError('"trim" must be a boolean')
+            }
+
+            if (typeof value === 'function') {
+                // 配置为函数, 先行执行一遍赋值, 之后再转移控制权
+                const func = value
+                value = async (context) => {
+                    this.#value(undefined, context)
+                    await func(context)
+                }
+            } else {
+                // 非函数, 包装成函数
+                value = this.#value.bind(this, value)
+            }
+
+            this.#keys.push(key)
+            this.#map[item.originKey] = key
+            this.#mapData[key] = {
+                key: item.originKey,
+                value,
+                trim
+            }
+        }
     }
 
     get keys() {
@@ -172,6 +262,11 @@ export class ImportExcel {
         rowData[key] = value
     }
 
+    /**
+     * 清除字符串数据两端空白
+     * @param {*} data 任何数据
+     * @returns 当数据为字符串时会返回清除两端空白后的字符串, 其他类型不作处理直接返回
+     */
     #trim(data) {
         if (typeof data === 'string') return data.trim()
         return data
@@ -260,10 +355,62 @@ export class ImportExcel {
 
 
 /**
- * @typedef {Object} header
+ * @typedef {Object} Header
  * @property {String} header 表头导出展示的值
  * @property {String} key 表头映射的字段
  */
+
+
+// export class ExportExcel {
+//     #beforeHandle = null
+//     #rowHandle = null
+//     #loadHandle = null
+
+//     constructor(options) {
+//         this.init(options)
+//         const workbook = new ExcelJS.Workbook()
+//         const worksheet = workbook.addWorksheet()
+//         typeof this.#beforeHandle && this.#beforeHandle({
+//             workbook,
+//             worksheet,
+//             app: this
+//         })
+//     }
+
+//     init(options) {
+//         const {
+//             beforeHandle,
+//             rowHandle,
+//             loadHandle,
+//             columns = [],
+//             body = [],
+//             fileName = '未命名'
+//         } = options
+
+//         if (!(beforeHandle === undefined || typeof beforeHandle === 'function')) {
+//             throw new TypeError('"beforeHandle" must be a function')
+//         }
+//         if (!(rowHandle === undefined || typeof rowHandle === 'function')) {
+//             throw new TypeError('"rowHandle" must be a function')
+//         }
+//         if (!(loadHandle === undefined || typeof loadHandle === 'function')) {
+//             throw new TypeError('"loadHandle" must be a function')
+//         }
+
+//         this.#beforeHandle = beforeHandle
+//         this.#rowHandle = rowHandle
+//         this.#loadHandle = loadHandle
+
+//         this.columns(columns)
+//     }
+
+//     /**
+//      * 创建列
+//      */
+//     createColumns(columns) {
+
+//     }
+// }
 
 /**
  * 将数据导出为 Excel(xlsx)
@@ -274,7 +421,7 @@ export class ImportExcel {
  * 示例: [{name: '哈哈', sex: '男'}, {name: '呵呵', sex: '女'}, {name: '嘿嘿', sex: '未知'}]
  * @param {object} options 配置对象
  * @param {string} [options.fileName] 
- * @param {Array.<header>} options.header 
+ * @param {Array.<Header>} options.header 
  * @param {object[]} options.content 
  */
 export const exportExcel = async (options) => {
@@ -286,9 +433,7 @@ export const exportExcel = async (options) => {
 
     const a = document.createElement("a")
     a.download = `${fileName}.xlsx`
-    const url = URL.createObjectURL(new Blob([await workbook.xlsx.writeBuffer()], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-    }))
+    const url = URL.createObjectURL(new Blob([await workbook.xlsx.writeBuffer()]))
     a.href = url
     a.click()
     URL.revokeObjectURL(url)

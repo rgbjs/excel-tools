@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   assist-tools:
-    specifier: 0.1.0
-    version: 0.1.0
+    specifier: 0.2.1
+    version: 0.2.1
   exceljs:
     specifier: 4.3.0
     version: 4.3.0
@@ -86,8 +86,8 @@ packages:
       zip-stream: 4.1.1
     dev: false
 
-  /assist-tools@0.1.0:
-    resolution: {integrity: sha512-nKR/SAH75a0x0AWXzwjvD598ZIrFAqIDOi3/qQAJFr4GcV1oUjwVcd5IaAxexIPXsDijMkkMH+Cz/49BYfAd9g==}
+  /assist-tools@0.2.1:
+    resolution: {integrity: sha512-CaSRcJq/l3KjNwtFDdnxaC/h4XYP6kM15nZgwzvGkLM9/hw6gP0Vws8RTluPQbDzW9tE1IXHh0Nwxqfks4R7tw==}
     dev: false
 
   /async@3.2.4:

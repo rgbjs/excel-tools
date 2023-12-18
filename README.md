@@ -46,10 +46,97 @@ import { ImportExcel, exportExcel } from 'excel-tools/dist/vue2'
 
 `new ImportExcel(mapData, options)`
 
-- mapData {Object} 数据映射表
+- mapData [Object] 数据映射列表
 - options {Object} 配置对象 [可选]
   - trim  {Boolean} 是否清除值两端的空白字符, 默认为 true [可选]
   - onRowLoad  {Function} 监听行的变化(每完成一行将调用一次),  接收一个上下文对象 [可选]
+
+```js
+import { ImportExcel } from 'excel-tools'
+
+/**
+ * 假设 Excel 中存在 "姓名" 和 "年龄" 和 "性别" 三列
+ */
+const importExcel = new ImportExcel(
+    [
+    	{
+            // 原始字段名
+            originKey: '姓名', 
+            // 映射后的字段名
+            key: 'name', 
+            // 否清除值两端的空白字符, 为空默认使用配置参数中的设置 [可选]
+            trim: true, 
+            // value 是可选的
+            value(ctx) {
+                // context 中的参数:
+                // - row 当前数据所在行下标(下标从0开始)
+                // - originRow 当前数据在 Excel 中的行(下标从0开始)
+                // - index 当前数据的下标(下标从0开始)
+                // - originIndex 当前数据在 Excel 中的列(下标从0开始)
+                // - key 当前的字段名
+                // - originKey 映射前的字段名
+                // - value 当前的值
+                // - rowItem 当前行解析前的数据(数组)
+                // - getRowData() 函数, 用于获取当前行解析后的数据
+                // - setData(key, value) 函数, 用于设置当前行数据某个字段的值
+                // key为设置的字段名, value 为设置的值
+
+                // 当该单元格数据不存在时, 设置一个默认值
+                const { key, value, setData } = context
+                if(value === undefined) {
+                    setData(key, '这是替代值')
+                }
+        },
+        {
+            originKey: '性别', 
+            key: 'sex', 
+            // value 是可选的
+            value: '这是替代值'
+            // 此处 value 写法会被包装成以下形式
+            // value(ctx) {
+            // 	 const { key, value, setData } = context
+            //   if(value === undefined) {
+            //      setData(key, '这是替代值')
+            //   }
+        	// }
+        },
+        {
+            originKey: '年龄', 
+            key: 'age'
+        },
+    ],
+	// 配置对象
+	{
+        trim: false, // 是否清除值两端的空白字符, 默认为 true [可选]
+        // 监听行的变化(每完成一行将调用一次), 接收一个上下文对象 [可选]
+        onRowLoad(context) {
+            // 该事件支持异步等待 => async value() => {}
+            // context 中的参数:
+            // - row 当前数据所在行下标(下标从0开始)
+            // - originRow 当前数据在 Excel 中的行(下标从0开始)
+            // - rowItem 当前行解析前的数据(数组)
+            // - rowData 当前行解析后的数据(对象)
+            // - setData(key, value) 函数, 用于设置当前行数据某个字段的值
+            // key为设置的字段名, value 为设置的值
+        }
+	}
+)
+
+// 加载一个 Excel, load() 传递一个文件对象, 返回一个 Promise
+importExcel.load(file).then(res => {
+    // res 解析后的结果
+}).catch(err => {
+    // 错误对象, 拥有两个字段: 
+    // - code -2 表示传递的不是文件对象,
+    // - code -1 表示文件对象不是 xlsx 类型,
+    // - code 0 表示解析过程中出现了错误
+    // - error Error 对象
+})
+```
+
+
+
+***以下使用方式不在被推荐***
 
 ```js
 import { ImportExcel } from 'excel-tools'
