@@ -1,8 +1,3 @@
-/**
- * 依赖版本 exceljs 4.3.0
- * 依赖版本 assist-tools 0.2.1
- */
-
 import ExcelJS from 'exceljs'
 import { isType, clone } from 'assist-tools'
 
