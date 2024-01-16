@@ -14,6 +14,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 
 import ExcelJS from 'exceljs';
 import { isType, clone } from 'assist-tools';
+export { default as ExcelJS } from 'exceljs';
 
 /**
  * @typedef {Object} Ctx - 上下文对象
@@ -248,57 +249,6 @@ export class ImportExcel {
  * @property {String} header 表头导出展示的值
  * @property {String} key 表头映射的字段
  */
-
-// export class ExportExcel {
-//     #beforeHandle = null
-//     #rowHandle = null
-//     #loadHandle = null
-
-//     constructor(options) {
-//         this.init(options)
-//         const workbook = new ExcelJS.Workbook()
-//         const worksheet = workbook.addWorksheet()
-//         typeof this.#beforeHandle && this.#beforeHandle({
-//             workbook,
-//             worksheet,
-//             app: this
-//         })
-//     }
-
-//     init(options) {
-//         const {
-//             beforeHandle,
-//             rowHandle,
-//             loadHandle,
-//             columns = [],
-//             body = [],
-//             fileName = '未命名'
-//         } = options
-
-//         if (!(beforeHandle === undefined || typeof beforeHandle === 'function')) {
-//             throw new TypeError('"beforeHandle" must be a function')
-//         }
-//         if (!(rowHandle === undefined || typeof rowHandle === 'function')) {
-//             throw new TypeError('"rowHandle" must be a function')
-//         }
-//         if (!(loadHandle === undefined || typeof loadHandle === 'function')) {
-//             throw new TypeError('"loadHandle" must be a function')
-//         }
-
-//         this.#beforeHandle = beforeHandle
-//         this.#rowHandle = rowHandle
-//         this.#loadHandle = loadHandle
-
-//         this.columns(columns)
-//     }
-
-//     /**
-//      * 创建列
-//      */
-//     createColumns(columns) {
-
-//     }
-// }
 
 /**
  * 将数据导出为 Excel(xlsx)
