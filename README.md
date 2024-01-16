@@ -173,7 +173,9 @@ const importExcel = new ImportExcel(
 	}
 )
 
-// 加载一个 Excel, load() 函数传递一个文件对象(File), 返回一个 Promise
+// 加载一个 Excel, load() 函数传递一个文件对象(File [,len]), 返回一个 Promise
+- File 浏览器文件对象
+- len 截取掉的行数, 很多情况下通过Excel导入会提供表头行, 表头描述行, 这些不属于数据的部分可以截取掉, 此时 len 传 2 即可, 如果想保留所有数据 len 请传递 0, len 默认值为 2 [可选]
 importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
@@ -243,7 +245,9 @@ const importExcel = new ImportExcel({
     }
 })
 
-// 加载一个 Excel, load() 传递一个文件对象, 返回一个 Promise
+// 加载一个 Excel, load() 函数传递一个文件对象(File [,len]), 返回一个 Promise
+- File 浏览器文件对象
+- len 截取掉的行数, 很多情况下通过Excel导入会提供表头行, 表头描述行, 这些不属于数据的部分可以截取掉, 此时 len 传 2 即可, 如果想保留所有数据 len 请传递 0, len 默认值为 2 [可选]
 importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
