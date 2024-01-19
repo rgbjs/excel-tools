@@ -29,7 +29,7 @@ import { isType, clone } from 'assist-tools'
  * @property {boolean} [trim] 是否清除值两端的空白字符, 为空默认使用配置参数中的设置 [可选]
  */
 
-export class ImportExcel {
+class ImportExcel {
     // 配置对象
     #options = {
         trim: true,
@@ -347,3 +347,5 @@ export class ImportExcel {
         })
     }
 }
+
+export default ImportExcel

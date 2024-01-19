@@ -54,7 +54,7 @@ var _verifyFile = /*#__PURE__*/new WeakSet();
 var _getData = /*#__PURE__*/new WeakSet();
 var _setData = /*#__PURE__*/new WeakSet();
 var _trim = /*#__PURE__*/new WeakSet();
-export class ImportExcel {
+class ImportExcel {
   // 监听行变化时的回调
 
   /**
@@ -408,3 +408,4 @@ function _trim2(data) {
   if (typeof data === 'string') return data.trim();
   return data;
 }
+export default ImportExcel;

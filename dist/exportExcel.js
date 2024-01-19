@@ -34,7 +34,7 @@ import { clone } from 'assist-tools'
 /** 
  * @param {ExportExcel} options 
  */
-export const exportExcel = async (options) => {
+const exportExcel = async (options) => {
     const {
         fileName = '未命名',
         header = [],
@@ -88,3 +88,5 @@ export const exportExcel = async (options) => {
     a.click()
     URL.revokeObjectURL(url)
 }
+
+export default exportExcel
