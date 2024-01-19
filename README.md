@@ -42,7 +42,7 @@ import { ImportExcel, exportExcel } from 'excel-tools/dist/vue2'
 
 
 
-##  使用示例
+## 导入使用示例
 
 **ImportExcel 语法:**
 
@@ -261,17 +261,34 @@ importExcel.load(file).then(res => {
 
 
 
+
+
+
+
+## 导出使用示例
+
 **exportExcel语法:**
 
 `exportExcel(options)`
 
 - options { Object } 配置对象
-  - fileName { String } 导出文件的名字, 默认值为 '未命名' [可选]
+  - fileName { String } 导出的文件名, 默认为 "未命名" [可选]
   - header { Object[] } 导出文件的表头, 传递数组对象
     - key  { string } 表头字段
     - header { string } 表头字段映射的值
     - width { number } 单元格宽度 [可选]
+    - 更多配置请查看 exceljs 官方文档
   - content { Object[] } 需要导出的数据, 传递数组对象
+  - sheetName { String } 导出的工作簿名, 默认为 "工作表1" [可选]
+  - wrapText { boolean } 单元格是否开启文本自动换行, 默认为 true [可选]
+  - horizontal { string } 单元格文本水平排列方式, 默认为 'center' [可选]
+    - 'left'|'center'|'right'|'fill'|'justify'|'centerContinuous'|'distributed'
+  - vertical { string } 单元格文本垂直排列方式, 默认为 'middle' [可选]
+    - 'top'|'middle'|'bottom'|'distributed'|'justify'
+  - numFmt { string } 所有单元格的格式类型, 默认为 [常规] , 具体请查看 Excel , 例如 '@' 为文本 [可选]
+  - beforeCreate { Function } 钩子函数: 在实例化 Excel 之前触发, 此处可拿到解析后的 header 配置, 可以自定义修改配置和自定义实例化 Excel
+    - 如果返回的是一个 Excel 实例, 那么内部将替换原有的实例, 如果非 Excel 实例将被抛弃, 但 header 配置的修改仍可生效 .
+  - create  { Function } 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 
 
 ```js
 import { exportExcel } from 'excel-tools'
