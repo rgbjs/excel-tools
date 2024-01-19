@@ -313,3 +313,17 @@ exportExcel({
 })
 ```
 
+
+
+
+
+## 自定义配置
+
+为了避免因为版本不一致(当前库使用exceljs@4.3.0)而导致打包后体积增大, 强烈建议使用当前库的 exceljs 版本 .
+
+```js
+import { ExcelJS } from 'excel-tools'
+// 针对 vue2 无法处理 class 的问题, 此处提供了一个降级后的包
+import { ExcelJS } from 'excel-tools/dist/vue2'
+```
+
