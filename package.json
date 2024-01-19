@@ -2,7 +2,7 @@
   "name": "excel-tools",
   "version": "0.3.1",
   "description": "基于 exceljs 封装的一个简易的导入导出模块",
-  "main": "index.js",
+  "main": "./src/index.js",
   "keywords": [
     "excel-tools"
   ],
