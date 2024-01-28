@@ -1,6 +1,6 @@
 {
   "name": "excel-tools",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "基于 exceljs 封装的一个简易的导入导出模块",
   "main": "./src/index.js",
   "keywords": [
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "assist-tools": "1.1.0",
-    "exceljs": "4.3.0"
+    "exceljs": "4.3.0",
+    "lodash": "^4.17.21"
   }
 }

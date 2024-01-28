@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs'
-import { isType, clone } from 'assist-tools'
+import { cloneDeep } from 'lodash'
+import { isType } from 'assist-tools'
 
 /**
  * @typedef {Object} Ctx - 上下文对象
@@ -182,15 +183,15 @@ class ImportExcel {
     }
 
     get keys() {
-        return clone(this.#keys)
+        return cloneDeep(this.#keys)
     }
 
     get map() {
-        return clone(this.#map)
+        return cloneDeep(this.#map)
     }
 
     get mapData() {
-        return clone(this.#mapData)
+        return cloneDeep(this.#mapData)
     }
 
     #value(val, context) {
@@ -312,10 +313,10 @@ class ImportExcel {
                                 originKey,
                                 value,
                                 get rowItem() {
-                                    return clone(item) // 当前行解析前的数据
+                                    return cloneDeep(item) // 当前行解析前的数据
                                 },
                                 getRowData() {
-                                    return clone(rowData) // 当前行解析后的数据
+                                    return cloneDeep(rowData) // 当前行解析后的数据
                                 },
                                 setData: this.#setData.bind(this, rowData)
                             })
@@ -328,10 +329,10 @@ class ImportExcel {
                             row: i, // 当前数据所在行下标
                             originRow: i + len, // 当前数据在 Excel 中的行
                             get rowItem() {
-                                return clone(item) // 当前行解析前的数据
+                                return cloneDeep(item) // 当前行解析前的数据
                             },
                             get rowData() {
-                                return clone(rowData) // 当前行解析前的数据
+                                return cloneDeep(rowData) // 当前行解析前的数据
                             },
                             setData: this.#setData.bind(this, rowData)
                         })

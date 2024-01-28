@@ -8,7 +8,8 @@ function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!priva
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 import ExcelJS from 'exceljs';
-import { isType, clone } from 'assist-tools';
+import { cloneDeep } from 'lodash';
+import { isType } from 'assist-tools';
 
 /**
  * @typedef {Object} Ctx - 上下文对象
@@ -144,13 +145,13 @@ class ImportExcel {
     _classPrivateFieldSet(this, _workbook, new ExcelJS.Workbook());
   }
   get keys() {
-    return clone(_classPrivateFieldGet(this, _keys));
+    return cloneDeep(_classPrivateFieldGet(this, _keys));
   }
   get map() {
-    return clone(_classPrivateFieldGet(this, _map));
+    return cloneDeep(_classPrivateFieldGet(this, _map));
   }
   get mapData() {
-    return clone(_classPrivateFieldGet(this, _mapData));
+    return cloneDeep(_classPrivateFieldGet(this, _mapData));
   }
   /**
    * 加载 xlsx 文件
@@ -203,10 +204,10 @@ class ImportExcel {
                 originKey,
                 value,
                 get rowItem() {
-                  return clone(item); // 当前行解析前的数据
+                  return cloneDeep(item); // 当前行解析前的数据
                 },
                 getRowData() {
-                  return clone(rowData); // 当前行解析后的数据
+                  return cloneDeep(rowData); // 当前行解析后的数据
                 },
                 setData: _classPrivateMethodGet(this, _setData, _setData2).bind(this, rowData)
               });
@@ -220,10 +221,10 @@ class ImportExcel {
               originRow: i + len,
               // 当前数据在 Excel 中的行
               get rowItem() {
-                return clone(item); // 当前行解析前的数据
+                return cloneDeep(item); // 当前行解析前的数据
               },
               get rowData() {
-                return clone(rowData); // 当前行解析前的数据
+                return cloneDeep(rowData); // 当前行解析前的数据
               },
               setData: _classPrivateMethodGet(this, _setData, _setData2).bind(this, rowData)
             }));

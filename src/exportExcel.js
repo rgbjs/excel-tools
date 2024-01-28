@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs'
-import { clone } from 'assist-tools'
+import { cloneDeep } from 'lodash'
 
 /**
  * @typedef Header
@@ -47,7 +47,7 @@ const exportExcel = async (options) => {
         create
     } = options
 
-    const newHeader = clone(header).map(item => {
+    const newHeader = cloneDeep(header).map(item => {
         if (!item.style) item.style = {}
         if (!item.alignment) item.style.alignment = {
             wrapText,
