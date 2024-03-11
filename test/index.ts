@@ -22,11 +22,6 @@ const importExcel = new ImportExcel([
 
 const init = () => {
 	const template = `
-        <style>
-            .file-input {
-                
-            }
-        </style>
         <input type="file" class="file-input">
         <button class="download">下载</button>
     `

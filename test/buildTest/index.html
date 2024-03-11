@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<input type="file" class="file-input" />
+		<button class="download">下载</button>
+
+		<script type="module">
+			import { exportExcel, ImportExcel } from '../../dist/main.es.js'
+
+			const importExcel = new ImportExcel([
+				{
+					originKey: '姓名',
+					key: 'name'
+				},
+				{
+					originKey: '性别',
+					key: 'sex'
+				},
+				{
+					originKey: '出生日期',
+					key: 'birthDate'
+				},
+				{
+					originKey: '手机号',
+					key: 'phone'
+				}
+			])
+
+			const fileInput = document.querySelector('.file-input')
+			let data
+			fileInput.addEventListener('change', async (e) => {
+				const file = e.target.files?.[0]
+				if (!file) return
+				data = await importExcel.load(file)
+				console.log(data)
+				console.log(importExcel.info)
+			})
+
+			const download = document.querySelector('.download')
+
+			download.addEventListener('click', () => {
+				if (!data) return
+				exportExcel({
+					fileName: '人员数据',
+					header: [
+						{
+							key: 'name',
+							header: '姓名',
+							width: 25
+						},
+						{
+							key: 'sex',
+							header: '性别',
+							width: 25
+						},
+						{
+							key: 'birthDate',
+							header: '出生日期',
+							width: 25
+						},
+						{
+							key: 'phone',
+							header: '手机号',
+							width: 25
+						}
+					],
+					content: data // 导出的数据
+				})
+			})
+		</script>
+	</body>
+</html>
