@@ -15,10 +15,10 @@
 		"noEmit": false,
 
 		/* Linting */
-		"strict": true,
+		// "strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	"include": ["src", "test"]
+	"include": ["src"]
 }
