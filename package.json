@@ -1,16 +1,26 @@
 {
-  "name": "excel-tools",
-  "version": "0.4.4",
-  "description": "基于 exceljs 封装的一个简易的导入导出模块",
-  "main": "./src/index.js",
-  "keywords": [
-    "excel-tools"
-  ],
-  "author": "feiYu",
-  "license": "ISC",
-  "dependencies": {
-    "assist-tools": "1.1.0",
-    "exceljs": "4.3.0",
-    "lodash": "^4.17.21"
-  }
+	"name": "excel-tools",
+	"version": "0.4.4",
+	"description": "基于 exceljs 封装的导入导出模块",
+	"type": "module",
+	"keywords": [
+		"excel-tools"
+	],
+	"author": "feiYu <feiyucode@gmail.com>",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -d && vite build && npm run build:types",
+		"build:types": "tsc -d",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4.17.12",
+		"typescript": "^5.3.3",
+		"vite": "^5.1.0"
+	},
+	"dependencies": {
+		"assist-tools": "^1.2.0",
+		"exceljs": "^4.4.0",
+		"lodash-es": "^4.17.21"
+	}
 }

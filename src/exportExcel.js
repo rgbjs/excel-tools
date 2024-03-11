@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs'
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 
 /**
  * @typedef Header
