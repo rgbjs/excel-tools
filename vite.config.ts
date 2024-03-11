@@ -5,7 +5,7 @@ export default defineConfig({
 		lib: {
 			entry: './src/main.ts',
 			name: 'excelTools',
-			formats: ['es', 'cjs', 'umd', 'iife'],
+			formats: ['es'],
 			fileName(format, entryName) {
 				return `${entryName}.${format}.js`
 			}
