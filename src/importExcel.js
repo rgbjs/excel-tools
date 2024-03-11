@@ -43,6 +43,7 @@ class ImportExcel {
 	#workbook = null // Excel 对象
 	#worksheet = [] // 读取的 Excel 数据
 	#onRowLoad = null // 监听行变化时的回调
+	#data = null // 解析后的数据
 
 	/**
 	 *
@@ -194,19 +195,27 @@ class ImportExcel {
 		return cloneDeep(this.#mapData)
 	}
 
+	get info() {
+		return {
+			workbook: this.#workbook,
+			worksheet: this.#worksheet,
+			parseData: this.#data
+		}
+	}
+
 	#value(val, context) {
 		const { key, value = val, setData } = context
 		setData(key, value)
 	}
 
 	/**
-	 * 传入一个路径, 返回其后缀, 若无后缀将返回空字符串
+	 * 传入一个路径, 返回其后缀(包含点), 若无后缀将返回空字符串
 	 * @param {string} path 路径
 	 * @returns {string}
 	 */
 	#getSuffix(path) {
 		const i = path.lastIndexOf('.')
-		return path.substring(i + 1)
+		return path.substring(i)
 	}
 
 	/**
@@ -221,10 +230,10 @@ class ImportExcel {
 			}
 		}
 		const fileType = this.#getSuffix(file.name)
-		if (fileType !== 'xlsx') {
+		if (fileType !== '.xlsx') {
 			return {
 				code: -1,
-				error: new TypeError('The file is not "xlsx"')
+				error: new TypeError('The file is not ".xlsx"')
 			}
 		}
 		return {
@@ -339,6 +348,7 @@ class ImportExcel {
 							}))
 					}
 
+					this.#data = result
 					resolve(result)
 				} catch (error) {
 					reject(error)
