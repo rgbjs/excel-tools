@@ -1,25 +1,43 @@
 import ExcelJS from 'exceljs'
 import { cloneDeep } from 'lodash-es'
 import { isType } from 'assist-tools'
-import { TConfig, TConfigItem, TOptions } from './types/structure'
+import { TConfig, TConfigItem, TObjConfigItem, TOptions } from './types/structure'
+import { TOptions as examineTOptions } from './types/example'
+import { TValueCtx, TanyObj } from './types/ctx'
 
 /**
  * 导入 Excel 构造器
  */
 class ImportExcel {
-	// 配置对象
-	#options = {
+	/** 配置对象 */
+	#options: examineTOptions = {
 		trim: true,
 		onRowLoad: null
 	}
-	#originMapData: TConfig = null // 原始配置
-	#mapData = {} // 解析后的数据
-	#map = {} // 映射关系
-	#keys = [] // 解析后的 keys
-	#workbook = null // Excel 对象
-	#worksheet = [] // 读取的 Excel 数据
-	#onRowLoad = null // 监听行变化时的回调
-	#data = null // 解析后的数据
+
+	/** 原始配置 */
+	#originMapData: TConfig = null
+
+	/** 解析后的配置 */
+	#parseConfig: TOptions = {}
+
+	/** 映射关系 */
+	#map: TanyObj = {}
+
+	/** 解析后的 keys */
+	#keys: string[] = []
+
+	/** Excel 对象 */
+	#workbook: TanyObj = null
+
+	/** 读取的 Excel 数据 */
+	#worksheet: unknown[][] = []
+
+	/** 监听行变化时的回调 */
+	#onRowLoad: Function | null = null
+
+	/** 解析后的数据 */
+	#data: TanyObj[] = null
 
 	/**
 	 * 创建一个导入 Excel 实例
@@ -68,7 +86,7 @@ class ImportExcel {
 		for (const k in this.#originMapData) {
 			if (!this.#originMapData.hasOwnProperty(k)) continue
 
-			let val = this.#originMapData[k]
+			let val: TObjConfigItem = this.#originMapData[k]
 			if (typeof val === 'string') {
 				// 参数归一化, 设置默认配置
 				val = {
@@ -105,7 +123,7 @@ class ImportExcel {
 
 			this.#keys.push(key)
 			this.#map[k] = key
-			this.#mapData[key] = {
+			this.#parseConfig[key] = {
 				key: k,
 				value,
 				trim
@@ -118,7 +136,7 @@ class ImportExcel {
 	 */
 	#v2Parse() {
 		for (let i = 0; i < (this.#originMapData as TConfigItem[]).length; i++) {
-			const item = this.#originMapData[i]
+			const item: TConfigItem = this.#originMapData[i]
 			if (isType(item) !== 'object') {
 				// 非对象抛出错误
 				throw new TypeError('the projects of "mapData" must all be objects')
@@ -149,7 +167,7 @@ class ImportExcel {
 
 			this.#keys.push(key)
 			this.#map[item.originKey] = key
-			this.#mapData[key] = {
+			this.#parseConfig[key] = {
 				key: item.originKey,
 				value,
 				trim
@@ -166,7 +184,7 @@ class ImportExcel {
 	}
 
 	get mapData() {
-		return cloneDeep(this.#mapData)
+		return cloneDeep(this.#parseConfig)
 	}
 
 	get info() {
@@ -177,7 +195,7 @@ class ImportExcel {
 		}
 	}
 
-	#value(val, context) {
+	#value(val: unknown, context: TValueCtx) {
 		const { key, value = val, setData } = context
 		setData(key, value)
 	}
@@ -193,7 +211,7 @@ class ImportExcel {
 
 	/**
 	 * 验证文件是否为 xlsx
-	 * @returns {object} 其中 code 为 -2 表示不是文件类型, -1 表示文件不是 xlsx
+	 * @returns 其中 code 为 -2 表示不是文件类型, -1 表示文件不是 xlsx
 	 */
 	#verifyFile(file: File) {
 		if (!(file instanceof File)) {
@@ -236,16 +254,16 @@ class ImportExcel {
 		}
 	}
 
-	#setData(rowData, key, value) {
+	#setData(rowData, key: string, value: any) {
 		rowData[key] = value
 	}
 
 	/**
 	 * 清除字符串数据两端空白
-	 * @param {*} data 任何数据
+	 * @param data 任何数据
 	 * @returns 当数据为字符串时会返回清除两端空白后的字符串, 其他类型不作处理直接返回
 	 */
-	#trim(data) {
+	#trim<T>(data: T) {
 		if (typeof data === 'string') return data.trim()
 		return data
 	}
@@ -254,10 +272,10 @@ class ImportExcel {
 	 * 加载 xlsx 文件
 	 * @param file 文件对象
 	 * @param len 截取掉(舍去)头部数据的长度(如表头, 描述等前几条不需要的数据), 默认为 2
-	 * @returns {Promise.<object[]>} 如果发生错误, 将返回一个对象, 其中 code 表示错误类型, error 为错误对象
+	 * @returns 如果发生错误, 将返回一个对象, 其中 code 表示错误类型, error 为错误对象
 	 * code -2 表示参数不是文件类型, -1 表示文件类型不是 xlsx , 0 Excel 解析过程中发生错误
 	 */
-	async load(file: File, len: number = 2) {
+	async load(file: File, len: number = 2): Promise<TanyObj[]> {
 		const checking = this.#verifyFile(file)
 		if (checking.code !== 1) {
 			throw checking
@@ -277,14 +295,14 @@ class ImportExcel {
 
 					// 去除前面几行, 如表头, 描述等
 					data = data.slice(len)
-					const result = []
+					const result: TanyObj[] = []
 					// 根据配置对数据进行处理
 					for (let i = 0; i < data.length; i++) {
 						const item = data[i]
 						const rowData = {}
 						for (let j = 0; j < this.keys.length; j++) {
 							const key = this.keys[j]
-							const { trim, key: originKey, value: handle } = this.#mapData[key]
+							const { trim, key: originKey, value: handle } = this.#parseConfig[key]
 							const value = trim ? this.#trim(item[j]) : item[j]
 							await handle({
 								row: i, // 当前数据所在行下标

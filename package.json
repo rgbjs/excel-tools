@@ -11,13 +11,14 @@
 	"author": "feiYu <feiyucode@gmail.com>",
 	"scripts": {
 		"dev": "vite",
+		"test": "cross-env VITE_APP_PATH=/test/index.ts vite",
 		"build": "tsc -d && vite build && npm run build:types",
 		"build:types": "tsc -d",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@types/exceljs": "^1.3.0",
 		"@types/lodash-es": "^4.17.12",
+		"cross-env": "^7.0.3",
 		"typescript": "^5.3.3",
 		"vite": "^5.1.0"
 	},

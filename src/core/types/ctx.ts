@@ -1,4 +1,6 @@
-interface TanyObj {
+// 上下文类型
+
+export interface TanyObj {
 	[key: string]: any
 }
 

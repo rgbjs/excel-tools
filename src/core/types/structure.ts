@@ -1,6 +1,4 @@
-/**
- * 构造实例需要的类型
- */
+// 构造实例需要的类型
 
 import { TOnRowLoadCtx, TValueCtx } from './ctx'
 
@@ -25,13 +23,13 @@ export interface TConfigItem {
 	 * - 支持异步等待
 	 * @param ctx 上下文对象
 	 */
-	value?: (ctx: TValueCtx) => any | any
+	value?: (ctx: TValueCtx) => void
 }
 
 /**
  * 对象模式配置 item : 仅作向后兼容
  */
-interface TObjConfigItem {
+export interface TObjConfigItem {
 	/**
 	 * 映射字段
 	 */
@@ -45,7 +43,7 @@ interface TObjConfigItem {
 	 * - 支持异步等待
 	 * @param ctx 上下文对象
 	 */
-	value?: (ctx: TValueCtx) => any | any
+	value?: (ctx: TValueCtx) => void
 }
 
 /**
