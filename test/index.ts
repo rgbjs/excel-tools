@@ -1,4 +1,5 @@
 import './importExcel'
+import './exportExcel'
 
 // // @ts-ignore
 // import { exportExcel, ImportExcel } from '../src/main.ts'
