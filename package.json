@@ -1,18 +1,25 @@
 {
 	"name": "excel-tools",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"description": "基于 exceljs 封装的导入导出模块",
 	"type": "module",
 	"main": "./dist/main.js",
 	"types": "./dist/main.d.ts",
 	"keywords": [
-		"excel-tools"
+		"excel-tools",
+		"excel"
 	],
 	"files": [
 		"dist",
 		"README.md"
 	],
+	"homepage": "https://github.com/rgbjs/excel-tools",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rgbjs/excel-tools.git"
+	},
 	"author": "feiYu <feiyucode@gmail.com>",
+	"license": "MIT",
 	"scripts": {
 		"dev": "vite",
 		"test:dev": "cross-env VITE_APP_PATH=/test/dev/index.ts vite",
