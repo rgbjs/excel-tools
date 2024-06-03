@@ -1,6 +1,6 @@
 {
 	"name": "excel-tools",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"description": "基于 exceljs 封装的导入导出模块",
 	"type": "module",
 	"main": "./dist/main.js",
@@ -8,22 +8,27 @@
 	"keywords": [
 		"excel-tools"
 	],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"author": "feiYu <feiyucode@gmail.com>",
 	"scripts": {
 		"dev": "vite",
-		"test": "cross-env VITE_APP_PATH=/test/index.ts vite",
-		"build": "tsc -d && vite build && npm run build:types",
-		"build:types": "tsc -d",
+		"test:dev": "cross-env VITE_APP_PATH=/test/dev/index.ts vite",
+		"test:pro": "cross-env VITE_APP_PATH=/test/pro/index.js vite",
+		"build": "vite build",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
 		"@types/lodash-es": "^4.17.12",
 		"cross-env": "^7.0.3",
 		"typescript": "^5.3.3",
-		"vite": "^5.1.0"
+		"vite": "^5.1.0",
+		"vite-plugin-dts": "^3.9.1"
 	},
 	"dependencies": {
-		"assist-tools": "^1.2.0",
+		"assist-tools": "^2.2.2",
 		"exceljs": "^4.4.0",
 		"lodash-es": "^4.17.21"
 	}

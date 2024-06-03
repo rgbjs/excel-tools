@@ -1,5 +1,5 @@
-import dom from './testTemplate'
-import { ImportExcel } from '../src/main'
+import dom from './htmlTemplate'
+import { ImportExcel } from '../../src/main'
 
 const importExcel = new ImportExcel([
 	{
