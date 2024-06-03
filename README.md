@@ -2,106 +2,90 @@
 
 **安装:**
 
-*pnpm*
+_pnpm_
 
 ```
 pnpm i excel-tools
 ```
 
-
-
-*yarn*
+_yarn_
 
 ```
 yarn add excel-tools
 ```
 
-
-
-*npm*
+_npm_
 
 ```
 npm i excel-tools
 ```
 
-
-
 **导入:**
 
 ```js
 import { ImportExcel, exportExcel } from 'excel-tools'
-// [0.5.0起弃用] 针对无法处理 class 私有属性的问题, 此处提供了一个降级后的包
-import { ImportExcel, exportExcel } from 'excel-tools/dist/vue2'
-// [0.5.0及以上] 变更为:
-import { ImportExcel, exportExcel } from 'excel-tools/dist/main.es.js'
-/**
-* ImportExcel 用于导入 Excel 数据
-* exportExcel 用于将数据导出为 Excel
-*/
 ```
 
+**0.5.1 及以下版本请看旧版文档**
 
-
-
+https://github.com/rgbjs/excel-tools/tree/0.5.1
 
 ## 导入使用示例
 
 **ImportExcel 语法:**
 
-`new ImportExcel(mapData [, options])`
+`new ImportExcel(config [, options])`
 
-- mapData { Object[] } 数据映射列表
+-   config { Object[] } 配置列表
 
-  - 数组中的每一项 item { Object }
+    -   数组中的每一项 item { Object }
 
-    - originKey { string } 原始字段名
-    - key { string } 映射后的字段名
-    - trim { boolean } 清除值两端的空白字符, 默认值使用配置参数中的设置 [可选]
-    - value { Function | any } 监听 "值" [可选]
+        -   originKey { string } 原始字段名
+        -   key { string } 映射后的字段名
+        -   trim { boolean } 清除值两端的空白字符, 默认值使用配置参数中的设置 [可选]
+        -   value { Function | any } 监听 "值" [可选]
 
-      - 当为函数时:
-      -  函数支持标记为 async , 执行器会在内部进行异步等待
-      - 可接收一个上下文对象参数 ctx
+            -   当为函数时:
+            -   函数支持标记为 async , 执行器会在内部进行异步等待
+            -   可接收一个上下文对象参数 ctx
 
-        - row 当前数据所在行下标(下标从0开始)
-        - originRow 当前数据在 Excel 中的行(下标从0开始)
-        - index 当前数据的下标(下标从0开始)
-        - originIndex 当前数据在 Excel 中的列(下标从0开始)
-        - key 当前的字段名
-        - originKey 映射前的字段名
-        - value 当前的值
-        - rowItem 当前行解析前的数据(数组)
-        - getRowData() 函数, 用于获取当前行解析后的数据, 拿到的值是该 "值" 解析前的, 即还未解析到的值在**此刻**是拿不到的
-        - setData(key, value) 函数, 用于设置当前行数据某个字段的值, key 为设置的字段名, value 为设置的值
+                -   row 当前数据所在行下标(下标从 0 开始)
+                -   originRow 当前数据在 Excel 中的行(下标从 0 开始)
+                -   index 当前数据的下标(下标从 0 开始)
+                -   originIndex 当前数据在 Excel 中的列(下标从 0 开始)
+                -   key 当前的字段名
+                -   originKey 映射前的字段名
+                -   value 当前的值
+                -   rowItem 当前行解析前的数据(数组)
+                -   getRowData() 函数, 用于获取当前行解析后的数据, 拿到的值是该 "值" 解析前的, 即还未解析到的值在**此刻**是拿不到的
+                -   setData(key, value) 函数, 用于设置当前行数据某个字段的值, key 为设置的字段名, value 为设置的值
 
-      - 当不是函数时:
+            -   当不是函数时:
 
-      - 该值会作为默认值, 即该数据的 Excel 单元格未填写时
+            -   该值会作为默认值, 即该数据的 Excel 单元格未填写时
 
-      - 实质内部是包装成函数进行处理
+            -   实质内部是包装成函数进行处理
 
-        ```js
-        ......
-        value: (ctx) => {
-        	const { key, value, setData } = context
-        	if(value === undefined) {
-        		setData(key, '这里是默认值 !!!')
-        	}
-        }
-        ```
+                ```js
+                ......
+                value: (ctx) => {
+                	const { key, value, setData } = context
+                	if(value === undefined) {
+                		setData(key, '这里是默认值 !!!')
+                	}
+                }
+                ```
 
-        
-
-- options { Object } 配置对象 [可选]
-  - trim  { boolean } 清除值两端的空白字符, 默认为 true [可选]
-  - onRowLoad  {Function} 监听行的变化(每完成一行将调用一次) [可选]
-    - 函数支持标记为 async , 执行器会在内部进行异步等待
-    - 可接收一个上下文对象参数 ctx
-      - row 当前数据所在行下标(下标从0开始)
-      - originRow 当前数据在 Excel 中的行(下标从0开始)
-      - rowItem 当前行解析前的数据(数组)
-      - rowData 当前行解析后的数据(对象)
-      - setData(key, value) 函数, 用于设置当前行数据某个字段的值, key 为设置的字段名, value 为设置的值
+-   options { Object } 配置对象 [可选]
+    -   trim { boolean } 清除值两端的空白字符, 默认为 true [可选]
+    -   onRowLoad {Function} 监听行的变化(每完成一行将调用一次) [可选]
+        -   函数支持标记为 async , 执行器会在内部进行异步等待
+        -   可接收一个上下文对象参数 ctx
+            -   row 当前数据所在行下标(下标从 0 开始)
+            -   originRow 当前数据在 Excel 中的行(下标从 0 开始)
+            -   rowItem 当前行解析前的数据(数组)
+            -   rowData 当前行解析后的数据(对象)
+            -   setData(key, value) 函数, 用于设置当前行数据某个字段的值, key 为设置的字段名, value 为设置的值
 
 ```js
 import { ImportExcel } from 'excel-tools'
@@ -113,11 +97,11 @@ const importExcel = new ImportExcel(
     [
     	{
             // 原始字段名
-            originKey: '姓名', 
+            originKey: '姓名',
             // 映射后的字段名
-            key: 'name', 
+            key: 'name',
             // 清除值两端的空白字符, 为空默认使用配置参数中的设置 [可选]
-            trim: true, 
+            trim: true,
             // value 是可选的
             value(ctx) {
                 // context 中的参数:
@@ -129,7 +113,7 @@ const importExcel = new ImportExcel(
                 // - originKey 映射前的字段名
                 // - value 当前的值
                 // - rowItem 当前行解析前的数据(数组)
-                // - getRowData() 函数, 用于获取当前行解析后的数据, 
+                // - getRowData() 函数, 用于获取当前行解析后的数据,
                 // 拿到的值是该 "值" 解析前的, 即还未解析到的值在*此刻*是拿不到的
                 // - setData(key, value) 函数, 用于设置当前行数据某个字段的值
                 // key 为设置的字段名, value 为设置的值
@@ -141,8 +125,8 @@ const importExcel = new ImportExcel(
                 }
         },
         {
-            originKey: '性别', 
-            key: 'sex', 
+            originKey: '性别',
+            key: 'sex',
             // value 是可选的
             value: '这是替代值'
             // 此处 value 写法会被包装成以下形式
@@ -154,7 +138,7 @@ const importExcel = new ImportExcel(
 	    // }
         },
         {
-            originKey: '年龄', 
+            originKey: '年龄',
             key: 'age'
         },
     ],
@@ -181,7 +165,7 @@ const importExcel = new ImportExcel(
 importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
-    // 错误对象, 拥有两个字段: 
+    // 错误对象, 拥有两个字段:
     // - code -2 表示传递的不是文件对象,
     // - code -1 表示文件对象不是 xlsx 类型,
     // - code 0 表示解析过程中出现了错误
@@ -189,9 +173,7 @@ importExcel.load(file).then(res => {
 })
 ```
 
-
-
-***以下使用方式不在被推荐***
+**_以下使用方式不在被推荐_**
 
 ```js
 import { ImportExcel } from 'excel-tools'
@@ -222,7 +204,7 @@ const importExcel = new ImportExcel({
             // - getRowData() 函数, 用于获取当前行解析后的数据
             // - setData(key, value) 函数, 用于设置当前行数据某个字段的值
             // key为设置的字段名, value 为设置的值
-            
+
             // 函数设置默认值
             const { key, value, setData } = context
             if(value === undefined) {
@@ -253,7 +235,7 @@ const importExcel = new ImportExcel({
 importExcel.load(file).then(res => {
     // res 解析后的结果
 }).catch(err => {
-    // 错误对象, 拥有两个字段: 
+    // 错误对象, 拥有两个字段:
     // - code -2 表示传递的不是文件对象,
     // - code -1 表示文件对象不是 xlsx 类型,
     // - code 0 表示解析过程中出现了错误
@@ -261,90 +243,88 @@ importExcel.load(file).then(res => {
 })
 ```
 
+## 实例属性/方法
 
+-   info 解析后的信息对象
 
+-   keys 解析后的 key 值
 
+-   map 配置映射关系
 
+-   mapData 解析后的配置
 
+-   load() 载入 Excel 的方法
 
 ## 导出使用示例
 
-**exportExcel语法:**
+**exportExcel 语法:**
 
 `exportExcel(options)`
 
-- options { Object } 配置对象
-  - fileName { String } 导出的文件名, 默认为 "未命名" [可选]
-  - header { Object[] } 导出文件的表头, 传递数组对象
-    - key  { string } 表头字段
-    - header { string } 表头字段映射的值
-    - width { number } 单元格宽度 [可选]
-    - 更多配置请查看 exceljs 官方文档
-  - content { Object[] } 需要导出的数据, 传递数组对象
-  - sheetName { String } 导出的工作簿名, 默认为 "工作表1" [可选]
-  - wrapText { boolean } 单元格是否开启文本自动换行, 默认为 true [可选]
-  - horizontal { string } 单元格文本水平排列方式, 默认为 'center' [可选]
-    - 'left'|'center'|'right'|'fill'|'justify'|'centerContinuous'|'distributed'
-  - vertical { string } 单元格文本垂直排列方式, 默认为 'middle' [可选]
-    - 'top'|'middle'|'bottom'|'distributed'|'justify'
-  - numFmt { string } 所有单元格的格式类型, 默认为 [常规] , 具体请查看 Excel , 例如 '@' 为文本 [可选]
-  - beforeCreate { Function } 钩子函数: 在实例化 Excel 之前触发, 此处可拿到解析后的 header 配置, 可以自定义修改配置和自定义实例化 Excel
-    - 如果返回的是一个 Excel 实例, 那么内部将替换原有的实例, 如果非 Excel 实例将被抛弃, 但 header 配置的修改仍可生效 .
-  - create  { Function } 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 
+-   options { Object } 配置对象
+    -   fileName { String } 导出的文件名, 默认为 "未命名" [可选]
+    -   header { Object[] } 导出文件的表头, 传递数组对象
+        -   key { string } 表头字段
+        -   header { string } 表头字段映射的值
+        -   width { number } 单元格宽度 [可选]
+        -   更多配置请查看 exceljs 官方文档
+    -   content { Object[] } 需要导出的数据, 传递数组对象
+    -   sheetName { String } 导出的工作簿名, 默认为 "工作表 1" [可选]
+    -   wrapText { boolean } 单元格是否开启文本自动换行, 默认为 true [可选]
+    -   horizontal { string } 单元格文本水平排列方式, 默认为 'center' [可选]
+        -   'left'|'center'|'right'|'fill'|'justify'|'centerContinuous'|'distributed'
+    -   vertical { string } 单元格文本垂直排列方式, 默认为 'middle' [可选]
+        -   'top'|'middle'|'bottom'|'distributed'|'justify'
+    -   numFmt { string } 所有单元格的格式类型, 默认为 [常规] , 具体请查看 Excel , 例如 '@' 为文本 [可选]
+    -   beforeCreate { Function } 钩子函数: 在实例化 Excel 之前触发, 此处可拿到解析后的 header 配置, 可以自定义修改配置和自定义实例化 Excel, 请返回修改后的实例对象 . 新版本将作出优化
+    -   create { Function } 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 新版本将作出优化
 
 ```js
 import { exportExcel } from 'excel-tools'
 
 // 假如需要导出的数据如下:
 const data = [
-    {
-        name: '小明',
-        age: 17,
-        age: '男'
-    },
-    {
-        name: '小白',
-        age: 18,
-        age: '女'
-    }
+	{
+		name: '小明',
+		age: 17,
+		age: '男'
+	},
+	{
+		name: '小白',
+		age: 18,
+		age: '女'
+	}
 ]
 
 exportExcel({
-    fileName: '人员数据',
-    header: [
-        {
-            key: 'name',
-            header: '姓名',
-            width: 25
-        },
-        {
-            key: 'age',
-            header: '年龄',
-            width: 24
-        },
-        {
-            key: 'sex',
-            header: '性别',
-            width: 23
-        }
-    ],
-    content: data // 导出的数据
+	fileName: '人员数据',
+	header: [
+		{
+			key: 'name',
+			header: '姓名',
+			width: 25
+		},
+		{
+			key: 'age',
+			header: '年龄',
+			width: 24
+		},
+		{
+			key: 'sex',
+			header: '性别',
+			width: 23
+		}
+	],
+	content: data // 导出的数据
 })
 ```
 
-
-
-
-
 ## 自定义配置
-
-为了避免因为版本不一致(当前库使用exceljs@4.4.0)而导致打包后体积增大, 强烈建议使用当前库的 exceljs 版本 .
 
 ```js
 import { ExcelJS } from 'excel-tools'
-// [0.5.0起弃用] 针对无法处理 class 私有属性的问题, 此处提供了一个降级后的包
-import { ImportExcel, exportExcel } from 'excel-tools/dist/vue2'
-// [0.5.0及以上] 变更为:
-import { ImportExcel, exportExcel } from 'excel-tools/dist/main.es.js'
 ```
 
+**0.5.1 及以下版本请看旧版文档**
+
+https://github.com/rgbjs/excel-tools/tree/0.5.1
