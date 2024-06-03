@@ -15,7 +15,7 @@ export interface TOptions {
 	 * - 支持异步等待
 	 * @param ctx 上下文对象
 	 */
-	onRowLoad: (ctx: TOnRowLoadCtx) => void
+	onRowLoad: (ctx: TOnRowLoadCtx) => void | Promise<void>
 }
 
 /**
@@ -35,5 +35,5 @@ export interface TParseConfig {
 	 * - 支持异步等待
 	 * @param ctx 上下文对象
 	 */
-	value?: (ctx: TValueCtx) => void
+	value?: (ctx: TValueCtx) => void | Promise<void>
 }

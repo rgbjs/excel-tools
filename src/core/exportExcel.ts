@@ -13,7 +13,7 @@ interface THeaderItem {
 	/**
 	 * 单元格宽度(列宽) [可选]
 	 */
-	width: number
+	width?: number
 	[key: string]: any
 }
 

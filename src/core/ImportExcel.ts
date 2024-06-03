@@ -1,9 +1,9 @@
 import ExcelJS from 'exceljs'
 import { cloneDeep } from 'lodash-es'
 import { isType } from 'assist-tools'
-import { TConfig, TConfigItem, TObjConfigItem, TOptions } from './types/structure'
-import { TOptions as examineTOptions } from './types/example'
-import { TValueCtx, TanyObj } from './types/ctx'
+import { TConfig, TConfigItem, TObjConfigItem, TOptions } from './types/structure.js'
+import { TOptions as examineTOptions } from './types/example.js'
+import { TValueCtx, TanyObj } from './types/ctx.js'
 
 /**
  * 导入 Excel 构造器
@@ -91,7 +91,7 @@ class ImportExcel {
 				// 参数归一化, 设置默认配置
 				val = {
 					key: val,
-					value: undefined,
+					value: void 0,
 					trim: this.#options.trim
 				}
 			} else if (isType(val) !== 'object') {
@@ -113,7 +113,7 @@ class ImportExcel {
 				// 配置为函数, 先行执行一遍赋值, 之后再转移控制权
 				const func = value
 				value = async (context) => {
-					this.#value(undefined, context)
+					this.#value(void 0, context)
 					await func(context)
 				}
 			} else {
@@ -157,7 +157,7 @@ class ImportExcel {
 				// 配置为函数, 先行执行一遍赋值, 之后再转移控制权
 				const func = value
 				value = async (context) => {
-					this.#value(undefined, context)
+					this.#value(void 0, context)
 					await func(context)
 				}
 			} else {
