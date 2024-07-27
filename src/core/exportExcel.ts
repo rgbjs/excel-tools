@@ -55,9 +55,15 @@ interface TOptions {
 	 */
 	beforeCreate?: Function
 	/**
-	 * 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 新版本将作出优化
+	 * @deprecated
+	 * - 请使用 created
+	 * - 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 新版本将作出优化
 	 */
 	create?: Function
+	/**
+	 * 钩子函数: 在实例化 Excel 之后触发, 此处可拿到实例对象, 仍可对实例对象进行修改 . 新版本将作出优化
+	 */
+	created?: Function
 }
 
 /**
@@ -74,7 +80,8 @@ const exportExcel = async (options?: TOptions) => {
 		vertical = 'middle',
 		numFmt,
 		beforeCreate,
-		create
+		create,
+		created
 	} = options
 
 	const newHeader = cloneDeep(header).map((item) => {
@@ -108,8 +115,8 @@ const exportExcel = async (options?: TOptions) => {
 	worksheet.columns = newHeader // 表头
 	worksheet.addRows(content) // 表内容
 
-	if (create) {
-		await create(workbook)
+	if (created || create) {
+		await (created || create)(workbook)
 	}
 
 	const a = document.createElement('a')
