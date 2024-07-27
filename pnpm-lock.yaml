@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   assist-tools:
-    specifier: ^2.2.2
-    version: 2.2.2
+    specifier: ^2.2.5
+    version: 2.2.5
   exceljs:
     specifier: ^4.4.0
     version: 4.4.0
@@ -645,8 +645,8 @@ packages:
       sprintf-js: 1.0.3
     dev: true
 
-  /assist-tools@2.2.2:
-    resolution: {integrity: sha512-v1jKcaVmShgr1Nz42zBAXGngVmBYhJ8Dkj70UE2WCgfsRckHyqRFWZWUB+sBRxIqB00m65JOZ6sT4Kn8RgProA==}
+  /assist-tools@2.2.5:
+    resolution: {integrity: sha512-b6U2Q4odyxIVv1RXjEzPJeGIE2R1EE68VsMrtvbv8zb0hCTP4+/Hb/Po3T0ictUk2bqenXVaYxu9/uIkPdM1BA==}
     dependencies:
       lodash-es: 4.17.21
     dev: false

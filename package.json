@@ -1,6 +1,6 @@
 {
 	"name": "excel-tools",
-	"version": "0.6.1",
+	"version": "0.6.2",
 	"description": "基于 exceljs 封装的导入导出模块",
 	"type": "module",
 	"main": "./dist/main.js",
@@ -35,7 +35,7 @@
 		"vite-plugin-dts": "^3.9.1"
 	},
 	"dependencies": {
-		"assist-tools": "^2.2.2",
+		"assist-tools": "^2.2.5",
 		"exceljs": "^4.4.0",
 		"lodash-es": "^4.17.21"
 	}
